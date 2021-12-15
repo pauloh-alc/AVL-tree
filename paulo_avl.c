@@ -2,6 +2,14 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <math.h>
+#include <time.h>
+#include <string.h>
+
+#define AVLS 1000         // MIL AVL's
+#define NOS 10000         // 10 MIL NÓS     
+#define TAM_ARRAY 10000   // TAMANHO DO ARRAY PARA AS CHAVES
+#define QTD_REMOCOES 1000 // QTD DE REMOCOES, MIL REMOCOES
+
 
 /* Autor.....: Paulo Henrique Diniz de Lima Alencar
  * Matrícula.: 494837
@@ -9,12 +17,29 @@
  *
  * AVL:
  * 
+ * Implementações................:
+ *
  * Inserir................... [ok]
  * Contar quantidade de nós.. [ok]
  * Encontrar Altura.......... [ok]
  * Verificar se é AVL........ [ok]
- * Remover................... [Aparentemente ok]
+ * Remover................... [ok]
  *
+ * Testes.......................:
+ *
+ * Criar 1.000 ALV's ............................................ [ok]
+ * Inserir 10.000 nós em cada AVL com chaves entre 0 e 100.000 .. [ok]
+ * Verificar se a AVL possui 10.000 nós ......................... [ok]
+ * Verificar se árvore é AVL .................................... [ok]
+ * Remover 1.000 nós ............................................ [ok]
+ * Após as remoções, verificar se árvore continua sendo AVL ..... [ok]
+ *
+ * Apresentação.................:
+ *
+ * Vídeo de 7 minutos ->
+ *  # dificuldades encontradas e como foram resolvidas ..................................................... [ok]
+ *  # apresentação dos códigos de cada algoritmo (atenção especial no inserir e remover) ................... [ok]
+ *  # demonstrar o funcionamento do programa em um caso pequeno (inserção de 100 nós e remoção de 10 nós) .. [] 
  */
 
 
@@ -33,7 +58,7 @@ int qtd_nos(No *pt) {
   return qtd_nos(pt->esq) + qtd_nos(pt->dir) + 1;
 }
 
-// Função: outra maneira de determinadar a qtd de nós presentes em um árvore
+// Função: outra maneira de determinadar a qtd de nós presentes em uma árvore
 int qtd_nos_2(No *pt, int *cont) {
   if (pt == NULL) return 0;
   else {
@@ -52,7 +77,7 @@ int qtd_nos_3(No *pt, int *cont) {
   *cont += 1;
 }
 
-// Função: dado dois elementos retorna o maior deles
+// Função: dado dois elementos retorna o maior deles (utilizando operador ternario)
 int maior(int a, int b) {
   return (a > b) ? a : b;
 }
@@ -92,7 +117,7 @@ bool verificar_AVL(No *pt) {
       flag = false;
       printf("No (%d) nao esta balanceado, bal = %d\n",pt->chave, pt->bal);
     }
-    printf("fb = %d, bal = %d\n",fb,pt->bal);
+    //printf("fb = %d, bal = %d\n",fb,pt->bal);
   }
   return flag;
 }
@@ -211,7 +236,7 @@ void inserirAVL(int x, No **pt, bool *h) {
 
 // Procedimento: responsável por exibir a AVL em Pré-Ordem
 void preordem_(No *pt) {
-  printf("%d(bal=%d) ",pt->chave,pt->bal); // chave (bal)
+  printf("chave = (%d)(bal=%d)\n",pt->chave,pt->bal); // chave (bal)
   if (pt->esq != NULL)
     preordem_(pt->esq);
   if (pt->dir != NULL)
@@ -219,6 +244,7 @@ void preordem_(No *pt) {
 }
 
 void preordem(No *pt) {
+  printf("ALV (Pré-ordem):\n");
   if (pt != NULL) preordem_(pt);
   else            printf("arvore esta vazia!\n");
 }
@@ -343,7 +369,7 @@ void troca(No **a, No **b) {
 void removerAVL(int x, No **pt, bool *h) {
   No *aux;
   if ((*pt) == NULL) {
-    printf("Elem. nao existe"); *h = false;
+    printf("Elem. nao existe!\n"); *h = false;
   } else {
     if (x < (*pt)->chave) {
       removerAVL(x, &(*pt)->esq, h);
@@ -386,12 +412,171 @@ void removerAVL(int x, No **pt, bool *h) {
   }
 }
 
+
+// Procedimento: resposnsável por desalocar memória de toda AVL - Basta percorrer a AVL em Pós-Ordem
+void liberar_memoriaAVL_(No* pt) {
+  if (pt->esq != NULL)
+    liberar_memoriaAVL_(pt->esq);
+  if (pt->dir != NULL)
+    liberar_memoriaAVL_(pt->dir);
+
+  free(pt);
+}
+
+// Procedimento: apos desalocar memoria de todos os nos de cada AVL, deixo o ponteiro raiz receber NULL, para indicar que a AVL esta vazia
+void liberar_memoriaAVL(No** pt) {
+  liberar_memoriaAVL_(*pt);
+  *pt = NULL;
+}
+
+
+// Procedimento: vai inserir 10 mil elementos distintos em um array com valores no range [0-100.000]
+void numeros_randomicos_10K (int* array, int tam_array, int semente) {
+  for (int i = 0; i < tam_array; i++) {
+    if (i <= 2499) {
+      array[i] = semente * i + 2; 
+    } else if (i >= 2500 && i <= 5000) {
+      array[i] = semente * i + 4;  
+    } else if (i <= 7500) {
+      array[i] = semente * i + 6; 
+    } else {
+      array[i] = semente * i + 8;
+    }
+  }
+}
+
+// Procedimento: vai inserir Mil elementos em um array com valores no range [0-10.000]
+void numeros_randomicos_1K (int* array, int tam_array, int semente) { 
+  for (int i = 0; i < tam_array; i++) {
+    if (i <= 249) {
+      array[i] = semente * i + 2; 
+    } else if (i >= 250 && i <= 500) {
+      array[i] = semente * i + 4;  
+    } else if (i <= 750) {
+      array[i] = semente * i + 6; 
+    } else {
+      array[i] = semente * i + 8;
+    }
+  }
+}
+
+bool busca_sequencial(int* array, int tam_array, int chave) {
+  for (int i = 0; i < tam_array; i++) {
+    if (array[i] == chave) return true;
+  }
+  return false;
+}
+
+void numeros_randomicos_100 (int* array, int tam_array) {
+  int chave;
+  srand(time(NULL));
+  for (int i = 0; i < tam_array; i++) {
+    chave = 1 + rand() % 10000;
+    while (busca_sequencial(array, tam_array, chave)) {
+      chave = 1 + rand() % 10000;
+    }
+    array[i] = chave;
+  }
+}
+
+// Realizando os testes propostos pelo professor.
+void TESTES () {
+  
+  int *array = (int*) malloc (sizeof(int) * TAM_ARRAY);
+  int *indices = (int*) malloc (sizeof(int) * QTD_REMOCOES);
+  
+  memset(array, 0, sizeof(int) * TAM_ARRAY);
+  memset(indices, 0, sizeof(int) * QTD_REMOCOES);
+  
+  No* ptraiz = NULL;
+  bool h;
+     
+  srand(time(NULL));
+
+  // TESTES ENUMERADOS.
+  // 1. Deve-se criar 1.000 AVL's 
+  for (int i = 0; i < AVLS; i++) {
+    numeros_randomicos_10K (array, TAM_ARRAY, 1 + rand() % 9);
+    
+    // 2. Deve-se inserir 10.000 nós onde cada nó está entre 0 e 100.000 (verificar se AVL possui 10.000 nós)
+    printf("\nINSERCAO (AVL - %d): \n",i+1);
+    for (int j = 0; j < NOS; j++) {
+      inserirAVL(array[j], &ptraiz, &h);     
+    }
+    
+    // 2. Verificando se AVL possui 10.000 nós
+    if (qtd_nos(ptraiz) == NOS) printf("#. ALV possui 10 MIL nós! n = %d\n",qtd_nos(ptraiz));
+    else                        printf("#. AVL não possui 10 MIL nós! n = %d\n",qtd_nos(ptraiz));
+    
+    // 3. Verificar se cada árvore é AVL
+    if (verificar_AVL(ptraiz)) printf("#. Árvore é AVL!\n");
+    else                       printf("#. Árvore não é AVL!\n");
+    
+    printf("\n\nREMOCAO (AVL - %d):\n",i+1);
+
+    // 4. Remover 1.000 nós 
+    numeros_randomicos_1K (indices, QTD_REMOCOES, 1 + rand() % 9);
+    for (int j = 0; j < QTD_REMOCOES; j++) {
+      removerAVL(array[indices[j]], &ptraiz, &h);
+    }
+
+    // 4. Verificar se a AVL possui 9.000 nós após a remoção
+    if (qtd_nos(ptraiz) == NOS - QTD_REMOCOES) printf("#. AVL possui 9 MIL nós! n = %d\n",qtd_nos(ptraiz));
+    else                                       printf("#. AVL não possui 9 MIL nós! n = %d\n",qtd_nos(ptraiz));
+
+    // 5. Após a remoção verificar se AVL continua sendo AVL
+    if (verificar_AVL(ptraiz)) printf("#. Após remoções: Árvore é AVL!\n");
+    else                       printf("#. Após remoções: Árvore não é AVL!\n");
+
+    liberar_memoriaAVL(&ptraiz);
+  }
+  free(array);
+  free(indices);
+}
+
 // Função principal para testes.
 int main (void) {
-  No *ptraiz = NULL;
+  
+  // TESTES();
+  
+  No* ptraiz = NULL;
   bool h;
   
+  // Criando AVL com 100 nós....................
+  int* array = (int*) malloc (sizeof(int) * 100);
+  memset(array, 0, sizeof(int) * 100);
+
+  numeros_randomicos_100 (array, 100);
+  
+  for (int i = 0; i < 100; i++) {
+    inserirAVL(array[i], &ptraiz, &h);
+  }
+
+  preordem(ptraiz);
+  
+  printf("\nqtd nos = %d\n",qtd_nos(ptraiz));
+  printf("altura = %d\n",altura(ptraiz));
+  printf("flag (AVL) = %d\n",verificar_AVL(ptraiz));
+  
+  // Removendo 10 nós da AVL...................
+  srand(time(NULL));
+  unsigned int indice;
+  for (int i = 0; i < 10; i++) {
+    indice = 1 + rand() % 100;
+    removerAVL(array[indice], &ptraiz, &h);
+  }
+  
+  printf("\nqtd nos após remoções = %d\n",qtd_nos(ptraiz));
+  printf("altura = %d\n",altura(ptraiz));
+  printf("flag (AVL) = %d\n",verificar_AVL(ptraiz));
+
+ 
   /*
+  
+  Árvore para testes: 
+
+  No *ptraiz = NULL;
+  bool h;
  
   // Primeira arvore....................................................................
   printf("Primeira arvore: "); 
@@ -402,10 +587,13 @@ int main (void) {
   inserirAVL(50, &ptraiz, &h);
   inserirAVL(25, &ptraiz, &h);
   preordem(ptraiz);
+  
   printf("\nqtd nos = %d\n",qtd_nos(ptraiz));
   printf("altura = %d\n",altura(ptraiz));
   printf("flag (AVL) = %d\n",verificar_AVL(ptraiz));
-   
+  
+  liberar_memoriaAVL(&ptraiz);
+  printf("%p\n",ptraiz);
   */
 
   
@@ -577,8 +765,6 @@ int main (void) {
   preordem(ptraiz);
   //preordem(ptraiz);
   
-
-
   removerAVL(14, &ptraiz, &h);
   
   removerAVL(24, &ptraiz, &h);
