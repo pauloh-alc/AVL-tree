@@ -23,11 +23,11 @@ The work consists:
 
 | 2. Tests            | 
 | -------------------   | 
-|    Test - 1 []    |  
-|    Test - 2 []    |  
-|    Test - 3 []    |  
-|    Test - 4 []    |  
-|    Test - 5 []    |  
+|    Test - 1 [ok]    |  
+|    Test - 2 [ok]    |  
+|    Test - 3 [ok]    |  
+|    Test - 4 [ok]    |  
+|    Test - 5 [ok]    |  
 
 | 3. Presentation       | Access link     |
 | -------------------   | ------------------- |
