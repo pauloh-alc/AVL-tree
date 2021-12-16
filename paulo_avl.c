@@ -39,7 +39,7 @@
  * Vídeo de 7 minutos ->
  *  # dificuldades encontradas e como foram resolvidas ..................................................... [ok]
  *  # apresentação dos códigos de cada algoritmo (atenção especial no inserir e remover) ................... [ok]
- *  # demonstrar o funcionamento do programa em um caso pequeno (inserção de 100 nós e remoção de 10 nós) .. [] 
+ *  # demonstrar o funcionamento do programa em um caso pequeno (inserção de 100 nós e remoção de 10 nós) .. [ok] 
  */
 
 
@@ -112,12 +112,11 @@ bool verificar_AVL(No *pt) {
     he = altura(pt->esq);
     fb = hd - he;
 
-    if (fb == -1 || fb == 0 || fb == 1 && fb == pt->bal) flag = true;
+    if (fb == -1 || fb == 0 || fb == 1) flag = true;
     else {                                               
       flag = false;
-      printf("No (%d) nao esta balanceado, bal = %d\n",pt->chave, pt->bal);
+      printf("No (%d) nao esta regulado, fb = %d\n",pt->chave, fb);
     }
-    //printf("fb = %d, bal = %d\n",fb,pt->bal);
   }
   return flag;
 }
@@ -291,7 +290,7 @@ void caso2R(No **pt, bool *h) {
   No *ptu, *ptv;
 
   ptu = (*pt)->dir;
-  if (ptu->bal >= 0) {
+  if (ptu->bal >= 0) { // Rotacao Simples
     (*pt)->dir = ptu->esq;
     ptu->esq = (*pt);
     (*pt) = ptu;
@@ -303,7 +302,7 @@ void caso2R(No **pt, bool *h) {
       (*pt)->esq->bal = 1;
       *h = false;
     }
-  } else { 
+  } else { // Rotacao Dupla
     ptv = ptu->esq;
     ptu->esq = ptv->dir;
     ptv->dir = ptu;
@@ -460,6 +459,7 @@ void numeros_randomicos_1K (int* array, int tam_array, int semente) {
   }
 }
 
+// Função: responsável por fazer uma busca sequencial em um vetor (retorna true se o elemento existe, false em caso contrário)
 bool busca_sequencial(int* array, int tam_array, int chave) {
   for (int i = 0; i < tam_array; i++) {
     if (array[i] == chave) return true;
@@ -467,6 +467,7 @@ bool busca_sequencial(int* array, int tam_array, int chave) {
   return false;
 }
 
+// Procedimento: responsável por gerar 100 números distintos em um array
 void numeros_randomicos_100 (int* array, int tam_array) {
   int chave;
   srand(time(NULL));
@@ -477,6 +478,20 @@ void numeros_randomicos_100 (int* array, int tam_array) {
     }
     array[i] = chave;
   }
+}
+
+// Procedimento: responsável por gerar 10 numeros distintos em um array
+void numeros_randomicos_10 (int* array, int tam_array) {
+  int chave;
+  srand(time(NULL));
+  for (int i = 0; i < tam_array; i++) {
+    chave = rand() % 100;
+    while (busca_sequencial(array, tam_array, chave)) {
+      chave = rand() % 100;
+    }
+    array[i] = chave;
+  }
+
 }
 
 // Realizando os testes propostos pelo professor.
@@ -539,6 +554,7 @@ int main (void) {
   
   // TESTES();
   
+   /* 
   No* ptraiz = NULL;
   bool h;
   
@@ -559,21 +575,26 @@ int main (void) {
   printf("flag (AVL) = %d\n",verificar_AVL(ptraiz));
   
   // Removendo 10 nós da AVL...................
-  srand(time(NULL));
-  unsigned int indice;
+  
+  int* indices_removidos = (int*) malloc (sizeof(int) * 100);
+  memset(indices_removidos, -1, sizeof(int) * 100);
+  numeros_randomicos_10 (indices_removidos, 10);
+
   for (int i = 0; i < 10; i++) {
-    indice = 1 + rand() % 100;
-    removerAVL(array[indice], &ptraiz, &h);
+    removerAVL(array[indices_removidos[i]], &ptraiz, &h);
   }
+
+  preordem(ptraiz);
   
   printf("\nqtd nos após remoções = %d\n",qtd_nos(ptraiz));
   printf("altura = %d\n",altura(ptraiz));
   printf("flag (AVL) = %d\n",verificar_AVL(ptraiz));
-
- 
-  /*
   
-  Árvore para testes: 
+   */
+  
+  ///*
+  
+  // Árvores para testes: 
 
   No *ptraiz = NULL;
   bool h;
@@ -592,9 +613,19 @@ int main (void) {
   printf("altura = %d\n",altura(ptraiz));
   printf("flag (AVL) = %d\n",verificar_AVL(ptraiz));
   
+  printf("\n");
+   
+  removerAVL(50, &ptraiz, &h);
+  removerAVL(40, &ptraiz, &h);
+  preordem(ptraiz); 
+  
+  printf("\nqtd nos = %d\n",qtd_nos(ptraiz));
+  printf("altura = %d\n",altura(ptraiz));
+  printf("flag (AVL) = %d\n",verificar_AVL(ptraiz));
+  
   liberar_memoriaAVL(&ptraiz);
-  printf("%p\n",ptraiz);
-  */
+ 
+  //*/
 
   
   /* 
