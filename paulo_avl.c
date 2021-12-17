@@ -258,7 +258,7 @@ void caso1R(No **pt, bool *h) {
     ptu->dir = (*pt);
     (*pt) = ptu;
     if (ptu->bal == -1) {
-      ptu->bal = (*pt)->bal = 0;
+      ptu->bal = (*pt)->dir->bal = 0;
       *h = true;
     } else {
       ptu->bal = 1;
@@ -295,7 +295,7 @@ void caso2R(No **pt, bool *h) {
     ptu->esq = (*pt);
     (*pt) = ptu;
     if (ptu->bal == 1) { 
-      ptu->bal = (*pt)->bal = 0;
+      ptu->bal = (*pt)->esq->bal = 0;
       *h = true;
     } else {
       ptu->bal = -1;
@@ -552,9 +552,10 @@ void TESTES () {
 // Função principal para testes.
 int main (void) {
   
-  // TESTES();
+  TESTES();
   
-   /* 
+  /* 
+ 
   No* ptraiz = NULL;
   bool h;
   
@@ -590,15 +591,17 @@ int main (void) {
   printf("altura = %d\n",altura(ptraiz));
   printf("flag (AVL) = %d\n",verificar_AVL(ptraiz));
   
-   */
+  */
   
-  ///*
+  
   
   // Árvores para testes: 
 
+  /*
+  
   No *ptraiz = NULL;
   bool h;
- 
+
   // Primeira arvore....................................................................
   printf("Primeira arvore: "); 
   inserirAVL(10, &ptraiz, &h);
@@ -625,7 +628,7 @@ int main (void) {
   
   liberar_memoriaAVL(&ptraiz);
  
-  //*/
+  */
 
   
   /* 
@@ -657,6 +660,7 @@ int main (void) {
   */
   
   /*
+  
   // Terceira arvore....................................................................
   ptraiz = NULL;
   printf("\nTerceira arvore: ");
@@ -691,6 +695,7 @@ int main (void) {
   printf("altura = %d\n",altura(ptraiz));
   printf("\nqtd nos = %d\n",qtd_nos(ptraiz));
   preordem(ptraiz);
+  
   */
 
   /*
@@ -762,12 +767,12 @@ int main (void) {
    *                  \
    *                   9
    *
-  */
   
-  /* 
   preordem(raiz);
   printf("flag (AVL) =  %d\n",verificar_AVL(raiz)); 
-  
+  */
+    
+  /*
   printf("\n\n\n\n\n");
   ptraiz = NULL;
   
@@ -782,10 +787,13 @@ int main (void) {
   inserirAVL(24, &ptraiz, &h);
   inserirAVL(3, &ptraiz, &h);
   preordem(ptraiz);
+  
   removerAVL(10, &ptraiz, &h);
   removerAVL(15, &ptraiz, &h);
   removerAVL(14, &ptraiz, &h);
   removerAVL(24, &ptraiz, &h);
+  preordem(ptraiz);
+  
   removerAVL(5, &ptraiz, &h);
   removerAVL(6, &ptraiz, &h);
   removerAVL(23, &ptraiz, &h);
@@ -794,7 +802,7 @@ int main (void) {
   removerAVL(25, &ptraiz, &h);
   printf("\n\n");
   preordem(ptraiz);
-  //preordem(ptraiz);
+  preordem(ptraiz);
   
   removerAVL(14, &ptraiz, &h);
   
@@ -805,7 +813,7 @@ int main (void) {
   
   removerAVL(3, &ptraiz, &h);
   removerAVL(15, &ptraiz, &h);
-
+  
   */
   return 0;
 }
